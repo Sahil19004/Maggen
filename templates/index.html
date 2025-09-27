@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickLoans - Your Trusted Financial Partner</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .selected-loan-info {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-text {
+    font-size: 0.875em;
+    color: #666;
+    margin-top: 5px;
+}
+
+.summary__item {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.summary__item:last-child {
+    border-bottom: none;
+}
+
+.success__content {
+    text-align: center;
+    padding: 20px;
+}
+
+.success__icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.error {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.file__upload {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.file__upload input[type="file"] {
+    display: none;
+}
+
+.file__upload label {
+    display: block;
+    padding: 15px;
+    background: #f8f9fa;
+    border: 2px dashed #ddd;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file__upload label:hover {
+    background: #e9ecef;
+    border-color: #007bff;
+}
+
+.file__upload input[type="file"]:focus + label {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.checkbox__label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin: 15px 0;
+}
+
+.checkbox__label input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.no-loans {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.loan__card[data-loan-category] {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.loan__card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Loading state for submit button */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .loans__grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .modal__content {
+        margin: 20px;
+        max-height: calc(100vh - 40px);
+        overflow-y: auto;
+    }
+    
+    .application__steps {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .step {
+        font-size: 0.875rem;
+        padding: 8px;
+    }
+}
+
+/* Step indicator enhancements */
+.step.active {
+    background: #007bff;
+    color: white;
+}
+
+.step.completed {
+    background: #28a745;
+    color: white;
+}
+
+.step {
+    background: #e9ecef;
+    color: #666;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+/* Simple Mobile Navigation with White Background */
+@media (max-width: 768px) {
+    /* Force white background on mobile nav */
+    .header__nav {
+        background-color: white !important;
+        background: white !important;
+    }
+    
+    /* If nav is hidden by default on mobile */
+    .header__nav {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        padding: 20px 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Show nav when active */
+    .header__nav.active {
+        display: block !important;
+    }
+    
+    /* Style the nav links for mobile */
+    .header__nav .nav__link {
+        display: block !important;
+        padding: 15px 20px !important;
+        color: #333 !important;
+        text-decoration: none;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .header__nav .nav__link:hover {
+        background-color: #f5f5f5;
+    }
+}
+
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header__content">
+                <div class="header__logo">
+                    <h2>💰 Magenn Finance</h2>
+                </div>
+                <nav class="header__nav" style="background-color:transparent;">
+                    <ul class="nav__list">
+                        <li><a href="#home" class="nav__link">Home</a></li>
+                        <li><a href="#about" class="nav__link">About</a></li>
+                        <li><a href="#loans" class="nav__link">Loans</a></li>
+                        <li><a href="#calculators" class="nav__link">Calculators</a></li>
+                        <li><a href="#testimonials" class="nav__link">Reviews</a></li>
+                        <li><a href="#contact" class="nav__link">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="header__actions">
+                    {% if request.user.is_authenticated %}
+                    <a href="/logout" class="btn btn--outline btn--sm" >Logout</a>
+                    {% else %}
+                    <button class="btn btn--outline btn--sm" id="loginBtn">Login</button>
+                    <button class="btn btn--primary btn--sm" id="signupBtn">Sign Up</button>
+                    {% endif %}
+                </div>
+                <button class="header__mobile-toggle" id="mobileToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero__carousel">
+            <div class="carousel__slide active" data-slide="0">
+                <div class="hero__bg"></div>
+                <div class="container">
+                    <div class="hero__content">
+                        <div class="hero__badge">Personal Loan</div>
+                        <h1>Get Quick Personal Loans</h1>
+                        <p>Up to ₹50,000 with minimal documentation. Fast approval process with competitive interest rates starting from 8.5% per annum</p>
+                        <button class="btn btn--primary btn--lg hero__cta">Apply Now</button>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel__slide" data-slide="1">
+                <div class="hero__bg hero__bg--business"></div>
+                <div class="container">
+                    <div class="hero__content">
+                        <div class="hero__badge">Business Loan</div>
+                        <h1>Business Growth Loans</h1>
+                        <p>Fuel your business expansion dreams. Flexible repayment options with loan amounts up to ₹500,000 for growing businesses</p>
+                        <button class="btn btn--primary btn--lg hero__cta">Get Started</button>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel__slide" data-slide="2">
+                <div class="hero__bg hero__bg--home"></div>
+                <div class="container">
+                    <div class="hero__content">
+                        <div class="hero__badge">Home Loan</div>
+                        <h1>Dream Home Loans</h1>
+                        <p>Make your dream home a reality. Home loans with attractive interest rates and flexible tenure up to 30 years</p>
+                        <button class="btn btn--primary btn--lg hero__cta">Explore Options</button>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel__controls">
+                <button class="carousel__prev">‹</button>
+                <button class="carousel__next">›</button>
+            </div>
+            <div class="carousel__dots">
+                <button class="dot active" data-slide="0"></button>
+                <button class="dot" data-slide="1"></button>
+                <button class="dot" data-slide="2"></button>
+            </div>
+        </div>
+        <div class="hero__features">
+            <div class="container">
+                <div class="features__grid">
+                    <div class="feature__item">
+                        <span class="feature__icon">⚡</span>
+                        <span class="feature__text">Quick Approval (24hrs)</span>
+                    </div>
+                    <div class="feature__item">
+                        <span class="feature__icon">🔒</span>
+                        <span class="feature__text">100% Secure</span>
+                    </div>
+                    <div class="feature__item">
+                        <span class="feature__icon">💯</span>
+                        <span class="feature__text">Best Rates</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loan Services Section -->
+ <section id="loans" class="loans">
+    <div class="container">
+        <div class="section__header">
+            <h2>Our Loan Products</h2>
+            <p>Choose from our wide range of loan products tailored to meet your financial needs</p>
+        </div>
+        <div class="loans__grid">
+            {% for loan in loan %}
+            <div class="loan__card card" data-loan-id="{{ loan.id }}" data-loan-category="{{ loan.category }}">
+                <div class="card__body">
+                    <div class="loan__icon">{{ loan.icon }}</div>
+                    <h3>{{ loan.name }}</h3>
+                    <p>{{ loan.short_description }}</p>
+                    <div class="loan__details">
+                        <div class="loan__detail">
+                            <span class="label">Interest Rate:</span>
+                            <span class="value">{{ loan.interest_rate_display }}</span>
+                        </div>
+                        <div class="loan__detail">
+                            <span class="label">Amount:</span>
+                            <span class="value">{{ loan.amount_range_display }}</span>
+                        </div>
+                        <div class="loan__detail">
+                            <span class="label">Tenure:</span>
+                            <span class="value">{{ loan.tenure_range_display }}</span>
+                        </div>
+                    </div>
+                    <ul class="loan__features">
+                        {% for feature in loan.get_features_list %}
+                        <li>{{ feature }}</li>
+                        {% endfor %}
+                    </ul>
+                    <button class="btn btn--primary btn--full-width apply-btn" 
+                            data-loan-id="{{ loan.id }}" 
+                            data-loan-name="{{ loan.name }}"
+                            data-loan-category="{{ loan.category }}">
+                        Apply Now
+                    </button>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-loans">
+                <p>No loan products available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section__header">
+                <h2>About QuickLoans</h2>
+                <p>Your trusted financial partner with over 15 years of experience</p>
+            </div>
+            <div class="about__content">
+                <div class="about__text">
+                    <h3>Our Mission</h3>
+                    <p>At QuickLoans, we're committed to making financial services accessible, transparent, and convenient for everyone. We believe that everyone deserves access to fair and affordable financial solutions.</p>
+                    <div class="about__features">
+                        <div class="feature__grid">
+                            <div class="feature__item">
+                                <div class="feature__icon">⚡</div>
+                                <div class="feature__content">
+                                    <h4>Quick Approval</h4>
+                                    <p>Get approved in as little as 24 hours with our streamlined digital process</p>
+                                </div>
+                            </div>
+                            <div class="feature__item">
+                                <div class="feature__icon">💰</div>
+                                <div class="feature__content">
+                                    <h4>Competitive Rates</h4>
+                                    <p>Best-in-market interest rates with transparent pricing and no hidden charges</p>
+                                </div>
+                            </div>
+                            <div class="feature__item">
+                                <div class="feature__icon">🔄</div>
+                                <div class="feature__content">
+                                    <h4>Flexible Terms</h4>
+                                    <p>Choose repayment terms and loan amounts that suit your financial situation</p>
+                                </div>
+                            </div>
+                            <div class="feature__item">
+                                <div class="feature__icon">🔒</div>
+                                <div class="feature__content">
+                                    <h4>100% Secure</h4>
+                                    <p>Bank-level security with encrypted data transmission and secure document handling</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about__stats">
+                    <div class="stats__grid">
+                        <div class="stat__item">
+                            <div class="stat__number">15+</div>
+                            <div class="stat__label">Years Experience</div>
+                        </div>
+                        <div class="stat__item">
+                            <div class="stat__number">50,000+</div>
+                            <div class="stat__label">Happy Customers</div>
+                        </div>
+                        <div class="stat__item">
+                            <div class="stat__number">₹500M+</div>
+                            <div class="stat__label">Loans Disbursed</div>
+                        </div>
+                        <div class="stat__item">
+                            <div class="stat__number">98%</div>
+                            <div class="stat__label">Approval Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculators Section -->
+    <section id="calculators" class="calculators">
+        <div class="container">
+            <div class="section__header">
+                <h2>Loan Calculators</h2>
+                <p>Calculate your EMI and check your loan eligibility instantly</p>
+            </div>
+            <div class="calculators__grid">
+                <div class="calculator card">
+                    <div class="card__body">
+                        <h3>EMI Calculator</h3>
+                        <form class="calculator__form">
+                            <div class="form-group">
+                                <label for="loanAmount" class="form-label">Loan Amount (₹)</label>
+                                <input type="number" id="loanAmount" class="form-control" value="10000" min="1000" max="2000000">
+                            </div>
+                            <div class="form-group">
+                                <label for="interestRate" class="form-label">Interest Rate (%)</label>
+                                <input type="number" id="interestRate" class="form-control" value="8.5" min="1" max="30" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label for="loanTenure" class="form-label">Loan Tenure (Years)</label>
+                                <input type="number" id="loanTenure" class="form-control" value="5" min="1" max="30">
+                            </div>
+                            <div class="emi__result">
+                                <div class="result__item">
+                                    <span class="result__label">Monthly EMI:</span>
+                                    <span class="result__value" id="emiAmount">₹206.99</span>
+                                </div>
+                                <div class="result__item">
+                                    <span class="result__label">Total Interest:</span>
+                                    <span class="result__value" id="totalInterest">₹2,419.40</span>
+                                </div>
+                                <div class="result__item">
+                                    <span class="result__label">Total Amount:</span>
+                                    <span class="result__value" id="totalAmount">₹12,419.40</span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="calculator card">
+                    <div class="card__body">
+                        <h3>Loan Eligibility Calculator</h3>
+                        <form class="calculator__form">
+                            <div class="form-group">
+                                <label for="monthlyIncome" class="form-label">Monthly Income (₹)</label>
+                                <input type="number" id="monthlyIncome" class="form-control" value="5000" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="monthlyExpenses" class="form-label">Monthly Expenses (₹)</label>
+                                <input type="number" id="monthlyExpenses" class="form-control" value="2000" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="existingEMI" class="form-label">Existing EMI (₹)</label>
+                                <input type="number" id="existingEMI" class="form-control" value="500" min="0">
+                            </div>
+                            <div class="eligibility__result">
+                                <div class="result__item">
+                                    <span class="result__label">Available Income:</span>
+                                    <span class="result__value" id="availableIncome">₹2,500</span>
+                                </div>
+                                <div class="result__item">
+                                    <span class="result__label">Eligible Loan Amount:</span>
+                                    <span class="result__value" id="eligibleAmount">₹150,000</span>
+                                </div>
+                                <div class="eligibility__status">
+                                    <span class="status status--success" id="eligibilityStatus">Eligible for loan</span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <!-- <section id="testimonials" class="testimonials">
+        <div class="container">
+            <div class="section__header">
+                <h2>What Our Customers Say</h2>
+                <p>Real stories from our satisfied customers</p>
+            </div>
+            <div class="testimonials__carousel">
+                <div class="testimonial__slides">
+                    <div class="testimonial__slide active">
+                        <div class="testimonial__card card">
+                            <div class="card__body">
+                                <div class="testimonial__rating">
+                                    <span class="stars">⭐⭐⭐⭐⭐</span>
+                                </div>
+                                <p class="testimonial__text">"QuickLoans helped me expand my bakery business with their quick approval process. The rates were competitive and the service was excellent!"</p>
+                                <div class="testimonial__author">
+                                    <div class="author__info">
+                                        <h4>Sarah Johnson</h4>
+                                        <p>Small Business Owner</p>
+                                        <span class="loan__type">Business Loan</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial__slide">
+                        <div class="testimonial__card card">
+                            <div class="card__body">
+                                <div class="testimonial__rating">
+                                    <span class="stars">⭐⭐⭐⭐⭐</span>
+                                </div>
+                                <p class="testimonial__text">"Got my personal loan approved within 24 hours. The entire process was seamless and transparent. Highly recommend their services!"</p>
+                                <div class="testimonial__author">
+                                    <div class="author__info">
+                                        <h4>Michael Chen</h4>
+                                        <p>Software Engineer</p>
+                                        <span class="loan__type">Personal Loan</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial__slide">
+                        <div class="testimonial__card card">
+                            <div class="card__body">
+                                <div class="testimonial__rating">
+                                    <span class="stars">⭐⭐⭐⭐⭐</span>
+                                </div>
+                                <p class="testimonial__text">"Finally got the keys to my dream home! QuickLoans made the home loan process so simple. Their team guided me through every step."</p>
+                                <div class="testimonial__author">
+                                    <div class="author__info">
+                                        <h4>Emma Rodriguez</h4>
+                                        <p>Marketing Manager</p>
+                                        <span class="loan__type">Home Loan</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial__slide">
+                        <div class="testimonial__card card">
+                            <div class="card__body">
+                                <div class="testimonial__rating">
+                                    <span class="stars">⭐⭐⭐⭐⭐</span>
+                                </div>
+                                <p class="testimonial__text">"Professional service and competitive rates. They understood my business needs and provided the perfect loan solution for my restaurant."</p>
+                                <div class="testimonial__author">
+                                    <div class="author__info">
+                                        <h4>David Kumar</h4>
+                                        <p>Restaurant Owner</p>
+                                        <span class="loan__type">Business Loan</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial__slide">
+                        <div class="testimonial__card card">
+                            <div class="card__body">
+                                <div class="testimonial__rating">
+                                    <span class="stars">⭐⭐⭐⭐⭐</span>
+                                </div>
+                                <p class="testimonial__text">"Excellent customer support and transparent terms. The EMI calculator helped me plan my finances perfectly. Thank you QuickLoans!"</p>
+                                <div class="testimonial__author">
+                                    <div class="author__info">
+                                        <h4>Lisa Thompson</h4>
+                                        <p>Teacher</p>
+                                        <span class="loan__type">Personal Loan</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial__controls">
+                    <button class="testimonial__prev">‹</button>
+                    <button class="testimonial__next">›</button>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Brand Partners Section -->
+    <section class="partners">
+        <div class="container">
+            <div class="section__header">
+                <h2>Trusted by Leading Partners</h2>
+                <p>We work with top financial institutions to bring you the best loan options</p>
+            </div>
+            <div class="partners__marquee">
+                <div class="marquee__track">
+                    <div class="partner__item">
+                        <div class="partner__logo">🏦</div>
+                        <span>TechBank</span>
+                    </div>
+                    <div class="partner__item">
+                        <div class="partner__logo">🔒</div>
+                        <span>SecureFinance</span>
+                    </div>
+                    <div class="partner__item">
+                        <div class="partner__logo">🌍</div>
+                        <span>GlobalCredit</span>
+                    </div>
+                    <div class="partner__item">
+                        <div class="partner__logo">💼</div>
+                        <span>TrustFund</span>
+                    </div>
+                    <div class="partner__item">
+                        <div class="partner__logo">⚡</div>
+                        <span>FastCash</span>
+                    </div>
+                    <div class="partner__item">
+                        <div class="partner__logo">💡</div>
+                        <span>SmartLoan</span>
+                    </div>
+                    <div class="partner__item">
+                        <div class="partner__logo">⭐</div>
+                        <span>PrimeCredit</span>
+                    </div>
+                    <div class="partner__item">
+                        <div class="partner__logo">✅</div>
+                        <span>EasyFinance</span>
+                    </div>
+                    <div class="partner__item">
+                        <div class="partner__logo">💸</div>
+                        <span>QuickCash</span>
+                    </div>
+                    <div class="partner__item">
+                        <div class="partner__logo">🛡️</div>
+                        <span>SafeLoan</span>
+                    </div>
+                    <!-- Duplicate for seamless scrolling -->
+                    <div class="partner__item">
+                        <div class="partner__logo">🏦</div>
+                        <span>TechBank</span>
+                    </div>
+                    <div class="partner__item">
+                        <div class="partner__logo">🔒</div>
+                        <span>SecureFinance</span>
+                    </div>
+                    <div class="partner__item">
+                        <div class="partner__logo">🌍</div>
+                        <span>GlobalCredit</span>
+                    </div>
+                    <div class="partner__item">
+                        <div class="partner__logo">💼</div>
+                        <span>TrustFund</span>
+                    </div>
+                    <div class="partner__item">
+                        <div class="partner__logo">⚡</div>
+                        <span>FastCash</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__section">
+                    <h3>💰 Magenn Finanace</h3>
+                    <p>Your trusted financial partner for all your lending needs. We make loans quick, easy, and affordable.</p>
+                    <div class="footer__contact">
+                        <p>📞 +91 93196 77381</p>
+                        <p>✉️ info@quickloans.com</p>
+                        <p>📍  B-70 A, Lajpat Nagar, Sahibabad,  Ghaziabad, U.P. 201005</p>
+                    </div>
+                </div>
+                <div class="footer__section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer__links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#loans">Loan Products</a></li>
+                        <li><a href="#calculators">Calculators</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4>Loan Products</h4>
+                    <ul class="footer__links">
+                        <li><a href="#">Personal Loans</a></li>
+                        <li><a href="#">Business Loans</a></li>
+              
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4>Follow Us</h4>
+                    <div class="footer__social">
+                        <a href="https://www.facebook.com/profile.php?id=61581284678937" target="_blank">📘 Facebook</a>
+                        <a href="https://wa.me/919319677381?text=Hello%20I%20am%20interested" target="_blank">💼 Whatsapp</a>
+                        <a href="https://www.instagram.com/MAGENN_FINANCE/" target="_blank">📷 Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2025 QuickLoans. All rights reserved. | Privacy Policy | Terms of Service</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loan Application Modal -->
+<div id="loanModal" class="modal hidden">
+    <div class="modal__content">
+        <div class="modal__header">
+            <h3>Loan Application - <span id="selectedLoanName"></span></h3>
+            <button class="modal__close">&times;</button>
+        </div>
+        <div class="modal__body">
+            <div class="application__steps">
+                <div class="step active" data-step="1">1. Personal Details</div>
+                <div class="step" data-step="2">2. Loan Details</div>
+                <div class="step" data-step="3">3. Documents</div>
+                <div class="step" data-step="4">4. Review</div>
+            </div>
+            <form id="loanApplicationForm" class="application__form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <!-- Hidden field for selected loan -->
+                <input type="hidden" id="selectedLoanId" name="loanType" value="">
+                
+                <div class="step__content active" data-step="1">
+                    {% if user.is_authenticated %}
+                        <div class="user-info-notice">
+                            <p><strong>Logged in as:</strong> {{ user.get_full_name|default:user.username }}</p>
+                            <p><em>Your profile information will be used for this application</em></p>
+                        </div>
+                        
+                        <!-- Optional override fields for authenticated users -->
+                        <div class="form-group">
+                            <label for="firstName" class="form-label">First Name (Override if needed)</label>
+                            <input type="text" id="firstName" name="firstName" class="form-control" 
+                                   value="{{ user.first_name }}" placeholder="Leave blank to use profile name">
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName" class="form-label">Last Name (Override if needed)</label>
+                            <input type="text" id="lastName" name="lastName" class="form-control" 
+                                   value="{{ user.last_name }}" placeholder="Leave blank to use profile name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email (Override if needed)</label>
+                            <input type="email" id="email" name="email" class="form-control" 
+                                   value="{{ user.email }}" placeholder="Leave blank to use profile email">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Phone Number (Override if needed)</label>
+                            <input type="tel" id="phone" name="phone" class="form-control" 
+                                   value="{{ user.profile.phone_number|default:'' }}" placeholder="Leave blank to use profile phone">
+                        </div>
+                    {% else %}
+                        <!-- Required fields for anonymous users -->
+                        <div class="form-group">
+                            <label for="firstName" class="form-label">First Name *</label>
+                            <input type="text" id="firstName" name="firstName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName" class="form-label">Last Name *</label>
+                            <input type="text" id="lastName" name="lastName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" id="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" class="form-control" required>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="step__content" data-step="2">
+                    <div class="form-group">
+                        <label class="form-label">Selected Loan Type</label>
+                        <div class="selected-loan-info">
+                            <span id="displayLoanName"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="requestedAmount" class="form-label">Requested Amount (₹) *</label>
+                        <input type="number" id="requestedAmount" name="requestedAmount" class="form-control" min="1000" required>
+                        <small class="form-text">Amount range: <span id="amountRange"></span></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="income" class="form-label">Annual Income (₹) *</label>
+                        <input type="number" id="income" name="income" class="form-control" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="purpose" class="form-label">Purpose of Loan *</label>
+                        <textarea id="purpose" name="purpose" class="form-control" rows="3" required></textarea>
+                    </div>
+                </div>
+                
+                <div class="step__content" data-step="3">
+                    <div class="form-group">
+                        <label class="form-label">Upload Required Documents *</label>
+                        <p class="document-notice">Please upload the following documents based on your loan type:</p>
+                    </div>
+                    
+                    <!-- Personal loan documents -->
+                    <div class="document-group personal-docs">
+                        <h5>Personal Documents</h5>
+                        <div class="form-group">
+                            <div class="file__upload">
+                                <input type="file" id="aadharCard" name="aadharCard" accept=".pdf,.jpg,.jpeg,.png" required>
+                                <label for="aadharCard">📄 Aadhar Card (Latest Downloaded) *</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="file__upload">
+                                <input type="file" id="panCard" name="panCard" accept=".pdf,.jpg,.jpeg,.png" required>
+                                <label for="panCard">🆔 PAN Card *</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="file__upload">
+                                <input type="file" id="incomeProof" name="incomeProof" accept=".pdf,.jpg,.jpeg,.png">
+                                <label for="incomeProof">💼 Income Proof (PDF/JPG)</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="file__upload">
+                                <input type="file" id="bankStatement" name="bankStatement" accept=".pdf">
+                                <label for="bankStatement">🏦 Bank Statement (PDF)</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Business loan documents (hidden by default) -->
+                    <div class="document-group business-docs" style="display: none;">
+                        <h5>Business Documents</h5>
+                        <div class="form-group">
+                            <div class="file__upload">
+                                <input type="file" id="udyamCertificate" name="udyamCertificate" accept=".pdf,.jpg,.jpeg,.png">
+                                <label for="udyamCertificate">🏢 Udyam Registration Certificate (Original Downloaded)</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="file__upload">
+                                <input type="file" id="gstCertificate" name="gstCertificate" accept=".pdf,.jpg,.jpeg,.png">
+                                <label for="gstCertificate">📋 GST Certificate</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step__content" data-step="4">
+                    <div class="review__section">
+                        <h4>Application Summary</h4>
+                        <div id="applicationSummary"></div>
+                        <div class="form-group">
+                            <label class="checkbox__label">
+                                <input type="checkbox" id="agreeTerms" required>
+                                <span class="checkmark"></span>
+                                I agree to the <a href="#" target="_blank">Terms and Conditions</a>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal__actions">
+                    <button type="button" class="btn btn--outline" id="prevStep" style="display: none;">Previous</button>
+                    <button type="button" class="btn btn--primary" id="nextStep">Next</button>
+                    <button type="submit" class="btn btn--primary" id="submitApplication" style="display: none;">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal hidden">
+    <div class="modal__content">
+        <div class="modal__header">
+            <h3>Application Submitted Successfully! 🎉</h3>
+            <button class="modal__close">&times;</button>
+        </div>
+        <div class="modal__body">
+            <div class="success__content">
+                <div class="success__icon">✅</div>
+                <p>Your loan application has been submitted successfully.</p>
+                <p><strong>Application ID: <span id="applicationId"></span></strong></p>
+                <p>We will review your application and get back to you within 24-48 hours.</p>
+                <p>You will receive a confirmation email shortly.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3>Login to Your Account</h3>
+                <button class="modal__close">&times;</button>
+            </div>
+            <div class="modal__body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail" class="form-label">Email Address</label>
+                        <input type="email" id="loginEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword" class="form-label">Password</label>
+                        <input type="password" id="loginPassword" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox__label">
+                            <input type="checkbox" id="rememberMe">
+                            <span class="checkmark"></span>
+                            Remember me
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Login</button>
+                    <div class="modal__footer">
+                        <p><a href="#">Forgot your password?</a></p>
+                        <p>Don't have an account? <a href="#" class="signup-link">Sign up here</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="successModal" class="modal hidden">
+    <div class="modal__content">
+        <div class="modal__header">
+            <h3>Application Submitted Successfully! 🎉</h3>
+            <button class="modal__close">&times;</button>
+        </div>
+        <div class="modal__body">
+            <div class="success__content">
+                <div class="success__icon">✅</div>
+                <p>Your loan application has been submitted successfully.</p>
+                <p><strong>Application ID: <span id="applicationId"></span></strong></p>
+                <p>We will review your application and get back to you within 24-48 hours.</p>
+                <p>You will receive a confirmation email shortly.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal hidden">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3>Create Your Account</h3>
+                <button class="modal__close">&times;</button>
+            </div>
+            <div class="modal__body">
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label for="signupFirstName" class="form-label">First Name</label>
+                        <input type="text" id="signupFirstName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupLastName" class="form-label">Last Name</label>
+                        <input type="text" id="signupLastName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail" class="form-label">Email Address</label>
+                        <input type="email" id="signupEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword" class="form-label">Password</label>
+                        <input type="password" id="signupPassword" class="form-control" required>
+                        <div class="password__strength" id="passwordStrength"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <input type="password" id="confirmPassword" class="form-control" required>
+                    </div>
+                   
+                    <button type="submit" class="btn btn--primary btn--full-width">Create Account</button>
+                    <div class="modal__footer">
+                        <p>Already have an account? <a href="#" class="login-link">Login here</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<script>
+    // Add this JavaScript to handle the form submissions
+document.addEventListener('DOMContentLoaded', function() {
+    // Login form submission
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            fetch('/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    remember_me: rememberMe
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Close modal and redirect or refresh
+                    closeModal('loginModal');
+                    window.location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during login.');
+            });
+        });
+    }
+    
+    // Signup form submission
+    const signupForm = document.getElementById('signupForm');
+    if (signupForm) {
+        signupForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('signupFirstName').value;
+            const lastName = document.getElementById('signupLastName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            fetch('/signup/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: email,
+                    password: password,
+                    confirm_password: confirmPassword
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Close modal and redirect or refresh
+                    closeModal('signupModal');
+                    window.location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during registration.');
+            });
+        });
+    }
+    
+    // Function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    // Function to close modal (you should implement this based on your modal implementation)
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
+});
+</script>
+<script>
+// Enhanced JavaScript for dynamic loan modal with UserProfile integration
+document.addEventListener('DOMContentLoaded', function() {
+    const loanModal = document.getElementById('loanModal');
+    const successModal = document.getElementById('successModal');
+    const applyButtons = document.querySelectorAll('.apply-btn');
+    const modalCloseButtons = document.querySelectorAll('.modal__close');
+    const form = document.getElementById('loanApplicationForm');
+    const steps = document.querySelectorAll('.step');
+    const stepContents = document.querySelectorAll('.step__content');
+    const nextBtn = document.getElementById('nextStep');
+    const prevBtn = document.getElementById('prevStep');
+    const submitBtn = document.getElementById('submitApplication');
+    
+    let currentStep = 1;
+    let selectedLoan = null;
+    const isAuthenticated = document.querySelector('.user-info-notice') !== null;
+
+    // Open modal when apply button is clicked
+    applyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const loanId = this.dataset.loanId;
+            const loanName = this.dataset.loanName;
+            const loanCategory = this.dataset.loanCategory;
+            
+            // Store selected loan info
+            selectedLoan = {
+                id: loanId,
+                name: loanName,
+                category: loanCategory.toLowerCase()
+            };
+            
+            // Update modal with selected loan info
+            document.getElementById('selectedLoanName').textContent = loanName;
+            document.getElementById('selectedLoanId').value = loanId;
+            document.getElementById('displayLoanName').textContent = loanName;
+            
+            // Get loan details for amount range
+            const loanCard = this.closest('.loan__card');
+            const amountRange = loanCard.querySelector('.loan__detail .value').textContent;
+            document.getElementById('amountRange').textContent = amountRange;
+            
+            // Show/hide document sections based on loan type
+            updateDocumentRequirements(loanCategory.toLowerCase());
+            
+            // Reset form and show modal
+            resetForm();
+            loanModal.classList.remove('hidden');
+        });
+    });
+
+    // Close modal
+    modalCloseButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.modal').classList.add('hidden');
+        });
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(e) {
+        if (e.target === loanModal) {
+            loanModal.classList.add('hidden');
+        }
+        if (e.target === successModal) {
+            successModal.classList.add('hidden');
+        }
+    });
+
+    // Step navigation
+    nextBtn.addEventListener('click', function() {
+        if (validateCurrentStep()) {
+            if (currentStep < 4) {
+                currentStep++;
+                updateSteps();
+            }
+        }
+    });
+
+    prevBtn.addEventListener('click', function() {
+        if (currentStep > 1) {
+            currentStep--;
+            updateSteps();
+        }
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (validateCurrentStep()) {
+            submitApplication();
+        }
+    });
+
+    function updateDocumentRequirements(loanCategory) {
+        const personalDocs = document.querySelector('.personal-docs');
+        const businessDocs = document.querySelector('.business-docs');
+        
+        // Always show personal documents
+        personalDocs.style.display = 'block';
+        
+        // Show business documents for business loans
+        if (loanCategory.includes('business') || loanCategory.includes('commercial')) {
+            businessDocs.style.display = 'block';
+            // Make business documents required
+            businessDocs.querySelectorAll('input[type="file"]').forEach(input => {
+                if (input.id === 'udyamCertificate') {
+                    input.required = true;
+                }
+            });
+        } else {
+            businessDocs.style.display = 'none';
+            // Remove required attribute from business documents
+            businessDocs.querySelectorAll('input[type="file"]').forEach(input => {
+                input.required = false;
+            });
+        }
+    }
+
+    function updateSteps() {
+        // Update step indicators
+        steps.forEach((step, index) => {
+            step.classList.toggle('active', index + 1 === currentStep);
+        });
+
+        // Update step content
+        stepContents.forEach((content, index) => {
+            content.classList.toggle('active', index + 1 === currentStep);
+        });
+
+        // Update buttons
+        prevBtn.style.display = currentStep > 1 ? 'block' : 'none';
+        nextBtn.style.display = currentStep < 4 ? 'block' : 'none';
+        submitBtn.style.display = currentStep === 4 ? 'block' : 'none';
+
+        // Update application summary on step 4
+        if (currentStep === 4) {
+            updateApplicationSummary();
+        }
+    }
+
+    function validateCurrentStep() {
+        const currentStepContent = document.querySelector(`[data-step="${currentStep}"].step__content`);
+        let isValid = true;
+        let requiredFields;
+
+        if (currentStep === 1 && !isAuthenticated) {
+            // For anonymous users, all personal fields are required
+            requiredFields = currentStepContent.querySelectorAll('[required]');
+        } else if (currentStep === 3) {
+            // Document validation - check visible required documents
+            requiredFields = currentStepContent.querySelectorAll('input[type="file"][required]');
+            requiredFields = Array.from(requiredFields).filter(field => {
+                return field.closest('.document-group').style.display !== 'none';
+            });
+        } else {
+            // Other steps - standard required field validation
+            requiredFields = currentStepContent.querySelectorAll('[required]');
+        }
+
+        requiredFields.forEach(field => {
+            if (field.type === 'file') {
+                if (!field.files.length) {
+                    field.classList.add('error');
+                    isValid = false;
+                } else {
+                    field.classList.remove('error');
+                }
+            } else if (!field.value.trim()) {
+                field.classList.add('error');
+                isValid = false;
+            } else {
+                field.classList.remove('error');
+            }
+        });
+
+        if (!isValid) {
+            alert('Please fill in all required fields and upload required documents.');
+        }
+
+        return isValid;
+    }
+
+    function updateApplicationSummary() {
+        const summary = document.getElementById('applicationSummary');
+        const formData = new FormData(form);
+        
+        // Get name (use form data or fallback to "Profile Name")
+        const firstName = formData.get('firstName') || (isAuthenticated ? 'Profile Name' : '');
+        const lastName = formData.get('lastName') || '';
+        const email = formData.get('email') || (isAuthenticated ? 'Profile Email' : '');
+        const phone = formData.get('phone') || (isAuthenticated ? 'Profile Phone' : '');
+        
+        // Count uploaded documents
+        const uploadedDocs = Array.from(form.querySelectorAll('input[type="file"]'))
+            .filter(input => input.files.length > 0)
+            .map(input => input.files[0].name);
+
+        summary.innerHTML = `
+            <div class="summary__item">
+                <strong>Name:</strong> ${firstName} ${lastName}
+            </div>
+            <div class="summary__item">
+                <strong>Email:</strong> ${email}
+            </div>
+            <div class="summary__item">
+                <strong>Phone:</strong> ${phone}
+            </div>
+            <div class="summary__item">
+                <strong>Loan Type:</strong> ${selectedLoan.name}
+            </div>
+            <div class="summary__item">
+                <strong>Requested Amount:</strong> ₹${parseFloat(formData.get('requestedAmount')).toLocaleString()}
+            </div>
+            <div class="summary__item">
+                <strong>Annual Income:</strong> ₹${parseFloat(formData.get('income')).toLocaleString()}
+            </div>
+            <div class="summary__item">
+                <strong>Purpose:</strong> ${formData.get('purpose')}
+            </div>
+            <div class="summary__item">
+                <strong>Documents Uploaded:</strong> ${uploadedDocs.length} files
+                ${uploadedDocs.length > 0 ? '<br><small>' + uploadedDocs.join(', ') + '</small>' : ''}
+            </div>
+        `;
+    }
+
+    function submitApplication() {
+        const formData = new FormData(form);
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+
+        fetch('{% url "submit_loan_application" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success modal
+                document.getElementById('applicationId').textContent = data.application_id;
+                loanModal.classList.add('hidden');
+                successModal.classList.remove('hidden');
+                resetForm();
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while submitting the application.');
+        })
+        .finally(() => {
+            // Reset button state
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Application';
+        });
+    }
+
+    function resetForm() {
+        form.reset();
+        currentStep = 1;
+        updateSteps();
+        
+        // Clear any error states
+        form.querySelectorAll('.error').forEach(field => {
+            field.classList.remove('error');
+        });
+        
+        // Reset document requirements
+        if (selectedLoan) {
+            updateDocumentRequirements(selectedLoan.category);
+        }
+    }
+});
+</script>
+    <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

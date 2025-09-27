@@ -1,0 +1,58 @@
+{{ company_name }}
+LOAN APPLICATION CONFIRMATION
+
+Dear {{ application.first_name }} {{ application.last_name }},
+
+Thank you for choosing {{ company_name }} for your financing needs. We have successfully received your loan application and wanted to confirm all the details with you.
+
+APPLICATION DETAILS
+===================
+Application ID: {{ application.application_id }}
+Applicant Name: {{ application.first_name }} {{ application.last_name }}
+Email: {{ application.email }}
+Phone: {{ application.phone }}
+Loan Product: {{ application.loan_product.name }}
+Requested Amount: ${{ application.requested_amount|floatformat:2 }}
+Annual Income: ${{ application.annual_income|floatformat:2 }}
+Purpose: {{ application.purpose }}
+Application Date: {{ application.created_at|date:"F d, Y" }}
+
+{% if uploaded_documents %}
+UPLOADED DOCUMENTS
+==================
+The following documents were successfully uploaded with your application:
+
+{% for document in uploaded_documents %}
+- {{ document.get_document_type_display }}: {{ document.original_filename }}
+{% endfor %}
+{% endif %}
+
+WHAT HAPPENS NEXT?
+==================
+1. Review Process: Our team will review your application within 1-2 business days
+2. Verification: We may contact you for additional information or document verification
+3. Decision: You'll receive a decision notification via email within 3-5 business days
+4. Funding: Upon approval, funds will be disbursed according to your loan terms
+
+CONTACT INFORMATION
+===================
+Customer Support: {{ company_phone }}
+Email: {{ company_email }}
+Office Address: {{ company_address }}
+Website: {{ website_url }}
+
+Track your application status at: {{ support_url }}
+
+IMPORTANT: Please keep this email for your records. You can reference your application ID {{ application.application_id }} in all future communications.
+
+If you have any questions or concerns, please don't hesitate to contact our customer support team.
+
+Thank you for choosing {{ company_name }}!
+
+Best regards,
+The {{ company_name }} Team
+
+---
+© {% now "Y" %} {{ company_name }}. All rights reserved.
+This is an automated message. Please do not reply to this email.
+Visit us at {{ website_url }}
