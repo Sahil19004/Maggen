@@ -330,12 +330,19 @@
                         <li>{{ feature }}</li>
                         {% endfor %}
                     </ul>
-                    <button class="btn btn--primary btn--full-width apply-btn" 
-                            data-loan-id="{{ loan.id }}" 
-                            data-loan-name="{{ loan.name }}"
-                            data-loan-category="{{ loan.category }}">
-                        Apply Now
-                    </button>
+                   {% if request.user.is_authenticated %}
+    <button class="btn btn--primary btn--full-width apply-btn" 
+            data-loan-id="{{ loan.id }}" 
+            data-loan-name="{{ loan.name }}"
+            data-loan-category="{{ loan.category }}">
+        Apply Now
+    </button>
+{% else %}
+   <button type="button" class="btn btn--primary btn--full-width" id="openLoginModal">
+    To Apply Login First
+</button>
+{% endif %}
+
                 </div>
             </div>
             {% empty %}
@@ -1381,6 +1388,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const modal = document.getElementById("loginModal");
+    const openBtn = document.getElementById("openLoginModal");
+    const closeBtn = modal.querySelector(".modal__close");
+
+    // Open modal on button click
+    openBtn.addEventListener("click", function() {
+        modal.classList.remove("hidden");
+    });
+
+    // Close modal on close button click
+    closeBtn.addEventListener("click", function() {
+        modal.classList.add("hidden");
+    });
+
+    // Close modal when clicking outside content
+    window.addEventListener("click", function(event) {
+        if (event.target === modal) {
+            modal.classList.add("hidden");
+        }
+    });
+});
+</script>
+    
     <script src="{% static 'js/app.js' %}"></script>
 </body>
 </html>
