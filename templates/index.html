@@ -355,71 +355,383 @@
 </section>
 
     <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <div class="section__header">
-                <h2>About QuickLoans</h2>
-                <p>Your trusted financial partner with over 15 years of experience</p>
+   <section id="about" style="
+        padding: 80px 0;
+        background: var(--color-bg-2);
+        position: relative;
+        overflow: hidden;
+    ">
+        <!-- Subtle Background Pattern -->
+        <div style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.1) 2px, transparent 2px),
+                              radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.7;
+        "></div>
+
+        <div style="
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        ">
+            <div style="
+                text-align: center;
+                margin-bottom: 60px;
+                animation: fadeInUp 1s ease-out;
+            ">
+                <h2 style="
+                    font-size: 3rem;
+                    font-weight: 700;
+                    margin: 0 0 20px 0;
+                    color: #1f2937;
+                    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                ">🏦 About Magenn Finance</h2>
+                <p style="
+                    font-size: 1.2rem;
+                    color: #6b7280;
+                    max-width: 600px;
+                    margin: 0 auto;
+                    line-height: 1.6;
+                ">Leading DSA platform working with India's top banks and NBFCs</p>
             </div>
-            <div class="about__content">
-                <div class="about__text">
-                    <h3>Our Mission</h3>
-                    <p>At QuickLoans, we're committed to making financial services accessible, transparent, and convenient for everyone. We believe that everyone deserves access to fair and affordable financial solutions.</p>
-                    <div class="about__features">
-                        <div class="feature__grid">
-                            <div class="feature__item">
-                                <div class="feature__icon">⚡</div>
-                                <div class="feature__content">
-                                    <h4>Quick Approval</h4>
-                                    <p>Get approved in as little as 24 hours with our streamlined digital process</p>
-                                </div>
-                            </div>
-                            <div class="feature__item">
-                                <div class="feature__icon">💰</div>
-                                <div class="feature__content">
-                                    <h4>Competitive Rates</h4>
-                                    <p>Best-in-market interest rates with transparent pricing and no hidden charges</p>
-                                </div>
-                            </div>
-                            <div class="feature__item">
-                                <div class="feature__icon">🔄</div>
-                                <div class="feature__content">
-                                    <h4>Flexible Terms</h4>
-                                    <p>Choose repayment terms and loan amounts that suit your financial situation</p>
-                                </div>
-                            </div>
-                            <div class="feature__item">
-                                <div class="feature__icon">🔒</div>
-                                <div class="feature__content">
-                                    <h4>100% Secure</h4>
-                                    <p>Bank-level security with encrypted data transmission and secure document handling</p>
-                                </div>
-                            </div>
+
+            <div style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 60px;
+                align-items: center;
+                margin-bottom: 80px;
+            ">
+                <div style="
+                    animation: slideInLeft 1s ease-out;
+                ">
+                    <div style="
+                        background: #ffffff;
+                        border-radius: 20px;
+                        padding: 40px;
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                        border: 1px solid #e5e7eb;
+                        position: relative;
+                    ">
+                        <div style="
+                            position: absolute;
+                            top: -2px;
+                            left: -2px;
+                            right: -2px;
+                            bottom: -2px;
+                            background: linear-gradient(45deg, #6366f1, #8b5cf6, #ec4899);
+                            border-radius: 22px;
+                            z-index: -1;
+                            opacity: 0;
+                            transition: opacity 0.3s ease;
+                        "></div>
+                        <h3 style="
+                            font-size: 2rem;
+                            font-weight: 600;
+                            margin: 0 0 20px 0;
+                            color: #1f2937;
+                        ">Our Mission</h3>
+                        <p style="
+                            font-size: 1.1rem;
+                            line-height: 1.7;
+                            margin: 0 0 25px 0;
+                            color: #4b5563;
+                        ">We are a leading DSA platform that works in collaboration with India's top banks and reputed NBFCs to provide customers with reliable, transparent, and quick financial solutions.</p>
+                        <p style="
+                            font-size: 1.1rem;
+                            line-height: 1.7;
+                            margin: 0;
+                            color: #4b5563;
+                        ">Our mission is to ensure that every customer gets the right loan solution tailored to their needs and eligibility.</p>
+                    </div>
+                </div>
+
+                <div style="
+                    animation: slideInRight 1s ease-out;
+                ">
+                    <h3 style="
+                        font-size: 1.8rem;
+                        font-weight: 600;
+                        margin: 0 0 30px 0;
+                        text-align: center;
+                        color: #1f2937;
+                    ">Our Services</h3>
+                    <div style="
+                        display: grid;
+                        gap: 15px;
+                    ">
+                        <div style="
+                            background: #ffffff;
+                            border-radius: 12px;
+                            padding: 20px;
+                            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                            border: 1px solid #e5e7eb;
+                            transition: all 0.3s ease;
+                            cursor: pointer;
+                            position: relative;
+                            overflow: hidden;
+                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(99, 102, 241, 0.15)'; this.style.borderColor='#6366f1'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.08)'; this.style.borderColor='#e5e7eb'">
+                            <span style="font-size: 1.1rem; font-weight: 500; color: #1f2937;">🏠 Personal Loan</span>
+                        </div>
+                        <div style="
+                            background: #ffffff;
+                            border-radius: 12px;
+                            padding: 20px;
+                            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                            border: 1px solid #e5e7eb;
+                            transition: all 0.3s ease;
+                            cursor: pointer;
+                            position: relative;
+                            overflow: hidden;
+                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(99, 102, 241, 0.15)'; this.style.borderColor='#6366f1'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.08)'; this.style.borderColor='#e5e7eb'">
+                            <span style="font-size: 1.1rem; font-weight: 500; color: #1f2937;">💼 Business Loan</span>
+                        </div>
+                        <div style="
+                            background: #ffffff;
+                            border-radius: 12px;
+                            padding: 20px;
+                            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                            border: 1px solid #e5e7eb;
+                            transition: all 0.3s ease;
+                            cursor: pointer;
+                            position: relative;
+                            overflow: hidden;
+                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(99, 102, 241, 0.15)'; this.style.borderColor='#6366f1'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.08)'; this.style.borderColor='#e5e7eb'">
+                            <span style="font-size: 1.1rem; font-weight: 500; color: #1f2937;">🏡 Home Loan</span>
+                        </div>
+                        <div style="
+                            background: #ffffff;
+                            border-radius: 12px;
+                            padding: 20px;
+                            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                            border: 1px solid #e5e7eb;
+                            transition: all 0.3s ease;
+                            cursor: pointer;
+                            position: relative;
+                            overflow: hidden;
+                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(99, 102, 241, 0.15)'; this.style.borderColor='#6366f1'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.08)'; this.style.borderColor='#e5e7eb'">
+                            <span style="font-size: 1.1rem; font-weight: 500; color: #1f2937;">🏢 Loan Against Property</span>
+                        </div>
+                        <div style="
+                            background: #ffffff;
+                            border-radius: 12px;
+                            padding: 20px;
+                            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                            border: 1px solid #e5e7eb;
+                            transition: all 0.3s ease;
+                            cursor: pointer;
+                            position: relative;
+                            overflow: hidden;
+                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(99, 102, 241, 0.15)'; this.style.borderColor='#6366f1'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.08)'; this.style.borderColor='#e5e7eb'">
+                            <span style="font-size: 1.1rem; font-weight: 500; color: #1f2937;">🚗 Car Loan</span>
                         </div>
                     </div>
                 </div>
-                <div class="about__stats">
-                    <div class="stats__grid">
-                        <div class="stat__item">
-                            <div class="stat__number">15+</div>
-                            <div class="stat__label">Years Experience</div>
-                        </div>
-                        <div class="stat__item">
-                            <div class="stat__number">50,000+</div>
-                            <div class="stat__label">Happy Customers</div>
-                        </div>
-                        <div class="stat__item">
-                            <div class="stat__number">₹500M+</div>
-                            <div class="stat__label">Loans Disbursed</div>
-                        </div>
-                        <div class="stat__item">
-                            <div class="stat__number">98%</div>
-                            <div class="stat__label">Approval Rate</div>
-                        </div>
-                    </div>
+            </div>
+
+            <div style="
+                text-align: center;
+                margin-bottom: 60px;
+                animation: fadeInUp 1.2s ease-out;
+            ">
+                <p style="
+                    font-size: 1.3rem;
+                    font-weight: 500;
+                    margin: 0 0 20px 0;
+                    color: #374151;
+                ">Our expert team understands your financial requirements and helps you choose the most suitable option.</p>
+            </div>
+
+            <div style="
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 30px;
+                animation: fadeInUp 1.4s ease-out;
+            ">
+                <div style="
+                    background: #ffffff;
+                    border-radius: 20px;
+                    padding: 40px;
+                    text-align: center;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                    border: 1px solid #e5e7eb;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    position: relative;
+                " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 20px 40px rgba(99, 102, 241, 0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0, 0, 0, 0.1)'">
+                    <div style="
+                        font-size: 3.5rem;
+                        margin-bottom: 20px;
+                        background: linear-gradient(45deg, #6366f1, #8b5cf6);
+                        border-radius: 50%;
+                        width: 80px;
+                        height: 80px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto 20px;
+                        font-size: 2.5rem;
+                    ">🤝</div>
+                    <h4 style="
+                        font-size: 1.5rem;
+                        font-weight: 600;
+                        margin: 0 0 15px 0;
+                        color: #1f2937;
+                    ">Trust</h4>
+                    <p style="
+                        font-size: 1rem;
+                        color: #6b7280;
+                        margin: 0;
+                        line-height: 1.6;
+                    ">Building lasting relationships through reliable financial solutions</p>
+                </div>
+
+                <div style="
+                    background: #ffffff;
+                    border-radius: 20px;
+                    padding: 40px;
+                    text-align: center;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                    border: 1px solid #e5e7eb;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    position: relative;
+                " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 20px 40px rgba(139, 92, 246, 0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0, 0, 0, 0.1)'">
+                    <div style="
+                        font-size: 3.5rem;
+                        margin-bottom: 20px;
+                        background: linear-gradient(45deg, #8b5cf6, #ec4899);
+                        border-radius: 50%;
+                        width: 80px;
+                        height: 80px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto 20px;
+                        font-size: 2.5rem;
+                    ">🔍</div>
+                    <h4 style="
+                        font-size: 1.5rem;
+                        font-weight: 600;
+                        margin: 0 0 15px 0;
+                        color: #1f2937;
+                    ">Transparency</h4>
+                    <p style="
+                        font-size: 1rem;
+                        color: #6b7280;
+                        margin: 0;
+                        line-height: 1.6;
+                    ">Clear processes with no hidden charges or surprises</p>
+                </div>
+
+                <div style="
+                    background: #ffffff;
+                    border-radius: 20px;
+                    padding: 40px;
+                    text-align: center;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                    border: 1px solid #e5e7eb;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    position: relative;
+                " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 20px 40px rgba(236, 72, 153, 0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0, 0, 0, 0.1)'">
+                    <div style="
+                        font-size: 3.5rem;
+                        margin-bottom: 20px;
+                        background: linear-gradient(45deg, #ec4899, #f59e0b);
+                        border-radius: 50%;
+                        width: 80px;
+                        height: 80px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto 20px;
+                        font-size: 2.5rem;
+                    ">⚡</div>
+                    <h4 style="
+                        font-size: 1.5rem;
+                        font-weight: 600;
+                        margin: 0 0 15px 0;
+                        color: #1f2937;
+                    ">Quick Services</h4>
+                    <p style="
+                        font-size: 1rem;
+                        color: #6b7280;
+                        margin: 0;
+                        line-height: 1.6;
+                    ">Fast approval and disbursement for urgent financial needs</p>
                 </div>
             </div>
         </div>
+
+        <style>
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes slideInLeft {
+                from {
+                    opacity: 0;
+                    transform: translateX(-50px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            @keyframes slideInRight {
+                from {
+                    opacity: 0;
+                    transform: translateX(50px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                #about {
+                    padding: 60px 0 !important;
+                }
+                
+                #about h2 {
+                    font-size: 2.5rem !important;
+                }
+                
+                #about > div > div:nth-child(2) {
+                    grid-template-columns: 1fr !important;
+                    gap: 40px !important;
+                }
+                
+                #about > div > div:last-child {
+                    grid-template-columns: 1fr !important;
+                    gap: 20px !important;
+                }
+            }
+
+            @media (max-width: 480px) {
+                #about > div > div:last-child {
+                    grid-template-columns: 1fr !important;
+                }
+            }
+        </style>
     </section>
 
     <!-- Calculators Section -->
@@ -717,7 +1029,7 @@
                 </div>
             </div>
             <div class="footer__bottom">
-                <p>&copy; 2025 QuickLoans. All rights reserved. | Privacy Policy | Terms of Service</p>
+                <p>&copy; 2025 magennfinance. All rights reserved. | <span> <a href=""> Privacy Policy</a></span> </p>
             </div>
         </div>
     </footer>
