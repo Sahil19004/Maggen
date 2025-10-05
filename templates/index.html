@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickLoans - Your Trusted Financial Partner</title>
+    <title>Magenn Finance - Your Trusted Financial Partner</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
         .selected-loan-info {
@@ -192,6 +192,76 @@
         background-color: #f5f5f5;
     }
 }
+.partners {
+  padding: 60px 0;
+  background: #f8f9fa;
+}
+
+.section__header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.section__header h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #1a1a1a;
+}
+
+.section__header p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.partners__marquee {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.marquee__track {
+  display: flex;
+  gap: 30px;
+  animation: scroll 30s linear infinite;
+}
+
+.partner__item {
+  flex-shrink: 0;
+  width: 200px;
+  height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.partner__item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.partner__logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 12px; /* Same border-radius as parent */
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-200px * 8 - 30px * 8));
+  }
+}
+
+/* Pause animation on hover */
+.partners__marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
 
 
     </style>
@@ -210,7 +280,7 @@
                         <li><a href="#about" class="nav__link">About</a></li>
                         <li><a href="#loans" class="nav__link">Loans</a></li>
                         <li><a href="#calculators" class="nav__link">Calculators</a></li>
-                        <li><a href="#testimonials" class="nav__link">Reviews</a></li>
+                      
                         <li><a href="#contact" class="nav__link">Contact</a></li>
                     </ul>
                 </nav>
@@ -915,79 +985,67 @@
     </section> -->
 
     <!-- Brand Partners Section -->
-    <section class="partners">
-        <div class="container">
-            <div class="section__header">
-                <h2>Trusted by Leading Partners</h2>
-                <p>We work with top financial institutions to bring you the best loan options</p>
-            </div>
-            <div class="partners__marquee">
-                <div class="marquee__track">
-                    <div class="partner__item">
-                        <div class="partner__logo">🏦</div>
-                        <span>TechBank</span>
-                    </div>
-                    <div class="partner__item">
-                        <div class="partner__logo">🔒</div>
-                        <span>SecureFinance</span>
-                    </div>
-                    <div class="partner__item">
-                        <div class="partner__logo">🌍</div>
-                        <span>GlobalCredit</span>
-                    </div>
-                    <div class="partner__item">
-                        <div class="partner__logo">💼</div>
-                        <span>TrustFund</span>
-                    </div>
-                    <div class="partner__item">
-                        <div class="partner__logo">⚡</div>
-                        <span>FastCash</span>
-                    </div>
-                    <div class="partner__item">
-                        <div class="partner__logo">💡</div>
-                        <span>SmartLoan</span>
-                    </div>
-                    <div class="partner__item">
-                        <div class="partner__logo">⭐</div>
-                        <span>PrimeCredit</span>
-                    </div>
-                    <div class="partner__item">
-                        <div class="partner__logo">✅</div>
-                        <span>EasyFinance</span>
-                    </div>
-                    <div class="partner__item">
-                        <div class="partner__logo">💸</div>
-                        <span>QuickCash</span>
-                    </div>
-                    <div class="partner__item">
-                        <div class="partner__logo">🛡️</div>
-                        <span>SafeLoan</span>
-                    </div>
-                    <!-- Duplicate for seamless scrolling -->
-                    <div class="partner__item">
-                        <div class="partner__logo">🏦</div>
-                        <span>TechBank</span>
-                    </div>
-                    <div class="partner__item">
-                        <div class="partner__logo">🔒</div>
-                        <span>SecureFinance</span>
-                    </div>
-                    <div class="partner__item">
-                        <div class="partner__logo">🌍</div>
-                        <span>GlobalCredit</span>
-                    </div>
-                    <div class="partner__item">
-                        <div class="partner__logo">💼</div>
-                        <span>TrustFund</span>
-                    </div>
-                    <div class="partner__item">
-                        <div class="partner__logo">⚡</div>
-                        <span>FastCash</span>
-                    </div>
-                </div>
-            </div>
+<section class="partners">
+  <div class="container">
+    <div class="section__header">
+      <h2>Trusted by Leading Partners</h2>
+      <p>We work with top financial institutions to bring you the best loan options</p>
+    </div>
+
+    <div class="partners__marquee">
+      <div class="marquee__track">
+        <div class="partner__item">
+          <img src="{% static 'images/1.jpeg' %}" alt="Partner 1" class="partner__logo">
         </div>
-    </section>
+        <div class="partner__item">
+          <img src="{% static 'images/2.jpeg' %}" alt="Partner 2" class="partner__logo">
+        </div>
+        <div class="partner__item">
+          <img src="{% static 'images/3.jpeg' %}" alt="Partner 3" class="partner__logo">
+        </div>
+        <div class="partner__item">
+          <img src="{% static 'images/4.jpeg' %}" alt="Partner 4" class="partner__logo">
+        </div>
+        <div class="partner__item">
+          <img src="{% static 'images/5.jpeg' %}" alt="Partner 5" class="partner__logo">
+        </div>
+        <div class="partner__item">
+          <img src="{% static 'images/6.jpeg' %}" alt="Partner 6" class="partner__logo">
+        </div>
+        <div class="partner__item">
+          <img src="{% static 'images/7.jpeg' %}" alt="Partner 7" class="partner__logo">
+        </div>
+        <div class="partner__item">
+          <img src="{% static 'images/8.jpeg' %}" alt="Partner 8" class="partner__logo">
+        </div>
+        <div class="partner__item">
+          <img src="{% static 'images/9.jpeg' %}" alt="Partner 9" class="partner__logo">
+        </div>
+        <div class="partner__item">
+          <img src="{% static 'images/10.jpeg' %}" alt="Partner 10" class="partner__logo">
+        </div>
+        <div class="partner__item">
+          <img src="{% static 'images/11.jpeg' %}" alt="Partner 11" class="partner__logo">
+        </div>
+        <div class="partner__item">
+          <img src="{% static 'images/12.jpeg' %}" alt="Partner 12" class="partner__logo">
+        </div>
+        <div class="partner__item">
+          <img src="{% static 'images/13.jpeg' %}" alt="Partner 13" class="partner__logo">
+        </div>
+        <div class="partner__item">
+          <img src="{% static 'images/14.jpeg' %}" alt="Partner 14" class="partner__logo">
+        </div>
+        <div class="partner__item">
+          <img src="{% static 'images/15.jpeg' %}" alt="Partner 15" class="partner__logo">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
 
     <!-- Footer -->
     <footer id="contact" class="footer">
@@ -1029,7 +1087,7 @@
                 </div>
             </div>
             <div class="footer__bottom">
-                <p>&copy; 2025 magennfinance. All rights reserved. | <span> <a href=""> Privacy Policy</a></span> </p>
+                <p>&copy; 2025 magennfinance. All rights reserved. | <span> <a href="/static/🔒 Privacy Policy magenn.pdf"> Privacy Policy</a></span>|<span><a href="/static/📑 Terms of Service.pdf">Terms Of Services</a> </span></p>
             </div>
         </div>
     </footer>
